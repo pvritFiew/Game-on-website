@@ -8,7 +8,7 @@ export default function App() {
       {/* Other components and routes */}
       <Routes>
         <Route path="/" element={<Home/>}></Route>
-        <Route path="/room" element={<Room/>}></Route>
+        <Route path="/room/:roomId" element={<Room/>}></Route>
         {/* Other routes */}
       </Routes>
     </div>
