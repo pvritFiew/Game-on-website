@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,19 +7,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button, TextField } from '@mui/material';
-import { RxCopy, RxPerson } from 'react-icons/rx';
+import { RxPerson } from 'react-icons/rx';
 import { BsHouseDoor } from 'react-icons/bs';
-import '../App.css';
-import { useParams, useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
-import axios from "axios";
+import axios from 'axios';
 
-const socket = io('http://localhost:5000');
-
-export default function Room() {
-  const navigate = useNavigate();
-  const { roomId } = useParams();
+function Gameplay() {
+  const { roomId } = useParams(); // Get roomId from the URL
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
@@ -26,32 +20,13 @@ export default function Room() {
       try {
         const response = await axios.get(`http://localhost:5000/rooms/${roomId}/names`);
         setPlayers(response.data);
-       
       } catch (error) {
         console.log('Error:', error);
       }
     };
+
     fetchPlayers();
-
-    socket.on('playerJoined', (updatedPlayers) => {
-      setPlayers(updatedPlayers);
-      console.log(players);
-    });
-
-    return () => {
-      socket.off('playerJoined');
-      
-    };
-  }, []);
-  
-  const handleStartGame = () => {
-    socket.emit('startGame'); // Emit a "startGame" event
-  };
-
-  // Listen for a "navigateToGameplay" event from the server
-  socket.on('navigateToGameplay', () => {
-    navigate(`/gameplay/${roomId}`); // Navigate to the Gameplay page
-  });
+  }, [roomId]); // Fetch players when roomId changes
 
   return (
     <div>
@@ -68,7 +43,7 @@ export default function Room() {
               {players.map((player, index) => (
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell>
-                    {index === 0 ? <BsHouseDoor size={30} /> : <RxPerson size={30} />}
+                    <RxPerson size={30} />
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {player}
@@ -79,19 +54,8 @@ export default function Room() {
           </Table>
         </TableContainer>
       </div>
-
-      <div>
-        <TextField hiddenLabel defaultValue={roomId} InputProps={{ readOnly: true }} variant="outlined" />
-
-        <RxCopy size={35} title="Copy" />
-      </div>
-
-      <div>
-        <Button variant="contained" color="success" onClick={handleStartGame}>
-          START
-        </Button>
-      </div>
-      <div>{roomId}</div>
     </div>
   );
 }
+
+export default Gameplay;
