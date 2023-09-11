@@ -11,10 +11,8 @@ import { RxCopy, RxPerson } from 'react-icons/rx';
 import { BsHouseDoor } from 'react-icons/bs';
 import '../App.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
+import socket from '../socket';
 import axios from "axios";
-
-const socket = io('http://localhost:5000');
 
 export default function Room() {
   const navigate = useNavigate();

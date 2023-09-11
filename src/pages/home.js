@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import io from 'socket.io-client';
+import socket from '../socket';
 import { Link, useNavigate } from "react-router-dom";
 import '../App.css'
 import { TextField, Button, Box } from "@mui/material";
 import { ImSearch } from "react-icons/im";
-
-const socket = io('http://localhost:5000');
 
 function Home() {
   const [roomId, setRoomId] = useState('');
@@ -71,11 +69,6 @@ function Home() {
   
       socket.emit('joinRoom', { roomId: joinRoomId, playerName });
     }
-  };
-
-  const [drop, setDrop] = React.useState(false);
-  const join_room_drop = () => {
-    setDrop(!drop);
   };
 
   return (
